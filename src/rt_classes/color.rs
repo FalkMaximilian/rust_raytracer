@@ -1,4 +1,4 @@
-use crate::rt_classes::vec3::Vec3;
+use std::ops;
 
 #[derive(Debug)]
 pub struct Color {
@@ -18,7 +18,7 @@ impl Color {
     }
 }
 
-impl Vec3 for Color {
+impl Color {
     // Dot product 
     fn dot(&self, other: &Self) -> f64 {
         self.r*other.r + self.g*other.g + self.b*other.b
@@ -43,7 +43,10 @@ impl Vec3 for Color {
     }
 }
 
+impl_op_ex!(+ |a: &Color, b: &Color| -> Color { Color::new(a.r + b.r, a.g + b.g, a.b + b.b) });
+impl_op_ex!(+= |a: &mut Color, b: &Color| {a.r += b.r; a.g += b.g; a.b += b.b} );
 
+impl_op_ex!(- |a: &Color, b: &Color| -> Color { Color::new(a.r - b.r, a.g - b.g, a.b - b.b) });
 
 
 // Addition
@@ -83,30 +86,6 @@ impl std::ops::Add<Color> for f64 {
     }
 }
 
-impl std::ops::Add<&Color> for &Color { 
-    type Output = Color;
-
-    fn add(self, rhs: &Color) -> Self::Output {
-        Color {
-            r: self.r + rhs.r, 
-            g: self.g + rhs.g, 
-            b: self.b + rhs.b
-        }
-    }
-}
-
-impl std::ops::Add<Color> for Color { 
-    type Output = Color;
-
-    fn add(self, rhs: Color) -> Self::Output {
-        Color {
-            r: self.r + rhs.r, 
-            g: self.g + rhs.g, 
-            b: self.b + rhs.b
-        }
-    }
-}
-
 impl std::ops::AddAssign<f64> for Color {
     fn add_assign(&mut self, rhs: f64) {
         self.r += rhs;
@@ -114,15 +93,6 @@ impl std::ops::AddAssign<f64> for Color {
         self.b += rhs;
     }
 }
-
-impl std::ops::AddAssign<&Color> for Color {
-    fn add_assign(&mut self, rhs: &Color) {
-        self.r += rhs.r;
-        self.g += rhs.g;
-        self.b += rhs.b;
-    }
-}
-
 
 
 // Subtraction
@@ -138,18 +108,6 @@ impl std::ops::Sub<f64> for &Color {
     }
 }
 
-
-impl std::ops::Sub<&Color> for &Color { 
-    type Output = Color;
-
-    fn sub(self, rhs: &Color) -> Self::Output {
-        Color {
-            r: self.r - rhs.r, 
-            g: self.g - rhs.g, 
-            b: self.b - rhs.b
-        }
-    }
-}
 
 impl std::ops::SubAssign<f64> for Color {
     fn sub_assign(&mut self, rhs: f64) {

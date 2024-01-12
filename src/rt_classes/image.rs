@@ -30,7 +30,7 @@ impl Image {
     }
 
     pub fn save(&self) {
-        let path = Path::new(r"/home/max/Pictures/raytracer/img.png");
+        let path = Path::new(r"/Users/maximilianfalk/Documents/projects/rust_raytracer/images/img.png");
         let file = File::create(path).unwrap();
         let ref mut w = BufWriter::new(file);
 
