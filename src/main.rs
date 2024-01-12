@@ -1,22 +1,20 @@
 #[macro_use] extern crate impl_ops;
 
-use std::mem::Discriminant;
-
-use rt_classes::color;
-use rt_classes::vec3::Vec3;
-
 // For reading and opening files
 use crate::rt_classes::image::Image;
 use crate::rt_classes::color::Color;
-use crate::rt_classes::point::Vec3;
+use crate::rt_classes::vec3::Vec3;
 use crate::rt_classes::ray::Ray;
 
 mod rt_classes;
 
 fn ray_color(r: Ray) -> Color {
 
-    if hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, &r) {
-        return Color::new(1.0, 0.0, 0.0)
+    let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, &r);
+
+    if t > 0f64 {
+        let N = (r.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit();
+        return 0.5*Color::new(N.x + 1.0, N.y + 1.0, N.z + 1.0)
     }
 
     let unit_dir = &r.direction / r.direction.length();
@@ -24,19 +22,24 @@ fn ray_color(r: Ray) -> Color {
     (1.0-a) * Color::new(1.0, 1.0, 1.0) + a * Color::new(0.5, 0.7, 1.0)
 }
 
-fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> f64 {
     let oc = r.origin - center;
-    let a = &r.direction * &r.direction;
-    let b = 2.0 * &oc * &r.direction;
-    let c = &oc * &oc - radius*radius;
-    let discriminant = b*b - 4.0*a*c;
-    discriminant >= 0.0
+    let a = &r.direction.length_squared();
+    let half_b = &oc * &r.direction;
+    let c = &oc.length_squared() - radius*radius;
+    let discriminant = half_b*half_b - a*c;
+
+    if discriminant < 0f64 {
+        -1.0
+    } else {
+        (-half_b - discriminant.sqrt()) / (2.0*a)
+    }
 }
 
 fn main() {
 
     let aspect_ratio = 16.0/9.0;
-    let image_width = 1920;
+    let image_width = 4096;
 
     let mut image_height = (image_width as f64 / (aspect_ratio)) as u32;
     if image_height == 0 {
@@ -47,7 +50,7 @@ fn main() {
 
     let focal_length = 1.0;
     let viewport_height = 2.0;
-    let viewport_width = viewport_height * (image_width / image_height) as f64;
+    let viewport_width = viewport_height * (image_width as f64 / image_height as f64);
     let camera_center_pnt = Vec3::new(0.0, 0.0, 0.0);
         
 

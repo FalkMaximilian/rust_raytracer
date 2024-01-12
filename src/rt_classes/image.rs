@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::BufWriter;
 
 use crate::rt_classes::color::Color;
@@ -30,7 +30,9 @@ impl Image {
     }
 
     pub fn save(&self) {
-        let path = Path::new(r"/Users/maximilianfalk/Documents/projects/rust_raytracer/images/img.png");
+
+        let path = Path::new(r"/home/max/raytracer_images/img.png");
+        fs::create_dir_all(Path::new(r"/home/max/raytracer_images/")).expect("Could not find or create path to store images at.");
         let file = File::create(path).unwrap();
         let ref mut w = BufWriter::new(file);
 

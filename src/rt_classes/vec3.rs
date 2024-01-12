@@ -1,5 +1,7 @@
 use std::ops;
 
+use super::color::Color;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     pub x: f64,
@@ -14,6 +16,14 @@ impl Vec3 {
             y,
             z,
         }
+    }
+
+    pub fn as_color(&self) -> Color {
+        Color::new(self.x, self.y, self.z)
+    }
+
+    pub fn unit(&self) -> Vec3 {
+        self / self.length()
     }
 }
 
