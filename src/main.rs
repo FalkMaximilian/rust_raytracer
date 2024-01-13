@@ -6,6 +6,9 @@ use crate::rt_classes::color::Color;
 use crate::rt_classes::vec3::Vec3;
 use crate::rt_classes::ray::Ray;
 
+mod config;
+use config::Config;
+
 mod rt_classes;
 
 fn ray_color(r: Ray) -> Color {
@@ -37,6 +40,9 @@ fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> f64 {
 }
 
 fn main() {
+
+
+    let config = Config::new();
 
     let aspect_ratio = 16.0/9.0;
     let image_width = 4096;
