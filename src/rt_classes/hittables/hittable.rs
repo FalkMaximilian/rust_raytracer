@@ -28,5 +28,9 @@ pub trait Hittable {
 
 
 pub struct HittableList {
-    pub objects: Vec<Box<dyn Hittable>>
+    pub objects: Vec<Box<dyn Hittable>>,
+}
+
+impl HittableList {
+    
 }
