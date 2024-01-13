@@ -1,5 +1,16 @@
-use std::io::Error as IoError;
+use std::{io::Error as IoError, process::Output};
 use std::fs;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ConfigToml {
+    output: Option<ConfigTomlOutput>
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ConfigTomlOutput {
+    path: Option<String>
+}
 
 pub struct Config {
     pub path: String
@@ -27,10 +38,22 @@ impl Config {
 
         let config_toml = toml::from_str(&content).unwrap_or_else(|_| {
             println!("Failed to create ConfigToml Object from config file.");
+            ConfigToml {
+                output: None,
+            }
         });
 
-        println!("{}", content);
+        let img_path: String = match config_toml.output {
+            Some(output) => {
+                let path = output.path.unwrap_or_else(|| {
+                    println!("Missing field 'path' in output section in config file.");
+                    "./images/img.png".to_owned()
+                });
+                path
+            },
+            None => "./images/img.png".to_owned(),
+        };
 
-        Config { path: "".to_owned() }
+        Config { path: img_path }
     }
 }

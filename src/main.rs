@@ -41,8 +41,8 @@ fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> f64 {
 
 fn main() {
 
-
     let config = Config::new();
+    println!("FROM MAIN: {}", config.path);
 
     let aspect_ratio = 16.0/9.0;
     let image_width = 4096;
