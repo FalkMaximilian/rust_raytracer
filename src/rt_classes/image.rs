@@ -1,7 +1,10 @@
+use std::fmt::format;
 use std::path::Path;
 use std::fs::{self, File};
 use std::io::BufWriter;
+use std::sync::Arc;
 
+use crate::config::Config;
 use crate::rt_classes::color::Color;
 
 pub struct Image {
@@ -29,11 +32,11 @@ impl Image {
         &self.data
     }
 
-    pub fn save(&self) {
+    pub fn save(&self, conf: &Config) {
 
-        let path = Path::new(r"/home/max/raytracer_images/img.png");
-        fs::create_dir_all(Path::new(r"/home/max/raytracer_images/")).expect("Could not find or create path to store images at.");
-        let file = File::create(path).unwrap();
+        let path = Path::new(&conf.path);
+        fs::create_dir_all(Path::new(&conf.path)).expect("Could not find or create path to store images at.");
+        let file = File::create(path.join("img.png")).unwrap();
         let ref mut w = BufWriter::new(file);
 
         let mut encoder = png::Encoder::new(w, self.width, self.height);
